@@ -1,0 +1,14 @@
+Suma de subconjuntos en PD:
+
+Se tiene un conjunto con N elementos. Se plantea la siguiente funcion recursiva:
+
+
+ss: C, {0,...,n}x{0,...,k} -> {V,F}
+
+Donde ss toma un Conjunto, un indice n que indica que se toman los elementos C[n:N] y un k que es la sumatoria que se desea alcanzar.
+             _
+            |
+            |   V,                                  k == 0
+ss{C,n,k} = |   F,                                  k < 0 or n == N
+            |   ss{C,n+1,k} or ss{C,n+1,k-C[n]},    n < N
+            |_

@@ -1,0 +1,46 @@
+Queremos ver si podemos mediante operaciones de izquierda a derecha conseguir un resultado objetivo.
+
+
+numeros = (5,2) target = 10
+
+solve(numeros, indice, target, current)
+
+casos base:
+*target == current, return true
+*target > current, return false
+*indice == N, return false (Porque current < target)
+
+Paso recursivo:
+Puedo meter cualquier simbolo:
+
+chequeo si alguno de los 3 siguientes llega a solucion:
+
+
+            true             current == 0
+solve =     false            target < 0 or (indice == -1 and target > 0) or ⌊current⌋ != current
+            I1 or I2 or I3
+
+
+I1: solve(indice-1, current-numero[indice])
+I2: solve(indice-1, current/numero[indice])
+I3: solve(indice-1, current//numero[indice])
+
+Ix = struct {
+    bool b
+    lista l
+}
+
+Con lista:
+
+                            (true, {})              current == 0
+                            (false, {})             target < 0 or (indice == -1 and target > 0) or ⌊current⌋ != current
+solve(indice, w) =          (true, Ag(+,I1.l))      I1.b == true
+                            (true, Ag(*,I2.l))      I2.b == true
+                            (true, Ag(**,I3.l))     I3.b == true
+                            (false, {})             c.c.
+
+
+I1 = solve(indice-1, current-numero[indice])
+I2 = solve(indice-1, current/numero[indice])
+I3 = solve(indice-1, current//numero[indice])
+

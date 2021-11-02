@@ -1,0 +1,20 @@
+Cortar la vara en todos los lugares del conjunto C donde cortar una vara de longitud l cuesta l.
+                 _
+                |
+                |   l + min{c'}(vara(c, c'))+min{c'}(vara(l-c, c')) 
+                |   
+vara(C,i, j) =  |   0                           C={}
+                |
+                |
+                |_
+
+|1|2|3|4|5|6|7|8|9|10|
+
+Suponemos que j > i siempre.
+Casos base:
+Si no existe c in C tal que i < c < j. Return 0.
+
+
+Paso recursivo:
+
+Resultado = (j-i) + min{c in C}{vara(C, i,c) + vara(C, c, j)}

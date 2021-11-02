@@ -1,0 +1,11 @@
+Problema de los billetes y la maquina:
+
+Funcion recursiva que toma el conjunto de billetes (B), el indice (i) y el target (t).
+
+
+                 _
+                |
+                | (-t,q),                                      t <= 0
+cc{B,i,t,q} =   | (inf,q),                                     i == N
+                | best(cc(B,i+1,t,q),cc(B,i+1,t-B[i],q+1)),    c.c.
+                |_

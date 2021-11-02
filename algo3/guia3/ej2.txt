@@ -1,0 +1,3 @@
+Queremos encontrar todas las aristas puentes de G en orden lineal.
+
+Hacemos DFS y vamos marcando los nodos visitados y su nivel. Al momento de subir vamos viendo si el nodo actual conecta con un nodo de mas arriba que su padre. Podemos subir hasta ahi sabiendo que todas las aristas intermedias no son puentes, esto lo hacemos nodo a nodo. Al momento de bajar rama a rama hacemos lo mismo. Si subimos por una arista que no tiene la tarjetita salvadora la marcamos puente.

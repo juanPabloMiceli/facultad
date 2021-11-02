@@ -1,0 +1,7 @@
+Ej4)El PD del ejercicio 4 es O(n)?
+d(v) = 0
+d(w) = min(z->w) in E(D)(d(z) + c(z->w))
+
+Tenemos a lo sumo n instancias, pero es O(1) resolver cada una? Me mareo al tener que calcular el minimo de lo que pueden ser (n-1) nodos.
+
+Ej3)Me queda en O(n^4)

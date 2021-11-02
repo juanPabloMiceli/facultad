@@ -1,0 +1,10 @@
+Digrafo bipartito con un conjunto Vin y un conjunto Vout, ambos de n nodos. Desde la fuente conectamos a los nodos de Vin y la arista (s->vin{i}) tiene capacidad dvi(+), esto fijara la cantidad de flujo(aristas) que pueden salir de el en el valor deseado. Luego conectamos cada nodo en Vin a cada nodo en Vout, con la salvedad de que Vin{i} no puede estar conectado con Vout{i}, con aristas de capacidad 1. Estas representaran un camino en el Digrafo final. Es decir, si (Vin{i}->Vout{j}) en el digrafo final ponemos (vi->vj). Por ultimo, conectamos todos los nodos de Vout al sumidero con aristas de capacidad dvi(-) para cada vi. Esto fijará la cantidad de flujo(aristas) que le llegan en el valor deseado.
+
+Complejidad: O(n*m*U)
+
+n= 2n+2 = O(n)
+m= n²+2n = O(n²)
+U= n-1 = O(n)
+Notar que podemos acotar U por n ya que a un nodo solo se le puede conectar a lo sumo todos los demas nodos una vez.
+
+Entonces la complejidad queda O(n⁴).

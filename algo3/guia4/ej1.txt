@@ -1,0 +1,10 @@
+a) BFS
+b) BFS
+c) Dijkstra
+d) Floyd
+e) Bellman-Ford
+f) Bellman-Ford
+g) Floyd
+
+
+

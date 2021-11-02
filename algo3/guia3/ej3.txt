@@ -1,0 +1,3 @@
+Queremos encontrar una orientacion fuertemente conexa de un grafo G cuando esta exista.
+
+Por el punto b sabemos que si G no tiene puentes entonces existe una orientacion fuertemente conexa del digrafo D. Entonces corremos el algoritmo del ejercicio 2, si nos devuelve algun puente entonces no existe dicha orientacion. En caso de que exista, mientras lo recorremos vamos marcando los caminos. Para toda arista perteneciente a T existe una arista que lleva del padre al hijo. Para toda arista no perteneciente a T pero si a G, existe una arista que lleva del nodo de mayor nivel en T al nodo de menor nivel.

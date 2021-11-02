@@ -1,0 +1,53 @@
+2)Sea G un grafo con los vertices {v1,...,vn} tal que todos los grados de sus vertices son distintos. Suponemos sin perdida de generalidad que:
+
+(1) d(v1) < d(v2) < ... < d(vn)
+
+Al G ser un grafo, podemos asegurar que no existen 2 aristas distintas tal que ambas conecten u y w, siendo los mismos 2 vertices cuales quiera del grafo. Esto nos dice que DELTA(G) <= N-1. Por lo tanto si queremos asegurar (1) necesitamos que d(vi) = i-1.
+
+Conectemos ahora vn con todos los demas vertices para lograr el grado deseado. Hecho esto nos queda que el grado minimo de todos los demas vertices es 1, lo cual rompe nuestra hipotesis de que d(v1) = 0.
+
+
+3)Sea G un grafo dirigido con los vertices {v1,...,vn} tal que todos los grados de salida de sus vertices son distintos. Suponemos sin perdida de generalidad que:
+
+(1) dout(v1) < dout(v2) < ... < dout(vn)
+
+Al G ser un grafo dirigido, podemos asegurar que no existen 2 aristas distintas tal que ambas conecten u y w, siendo los mismos 2 vertices cuales quiera del grafo. Esto nos dice que DELTAout(G) <= N-1. Por lo tanto si queremos asegurar (1) necesitamos que dout(vi) = i-1.
+
+Conectemos ahora vn con todos los demas vertices para lograr el grado deseado. Hecho esto nos queda que dout(vn) = n-1 y dout(vi) = 0, i < n.
+Solo existe una unica manera de hacer el paso anterior. Ahora vamos con v(n-1), debemos conectar este vertice con n-2 vertices y tenemos n-1 opciones. Pero en realidad vn no puede ser elegido porque si lo eligieramos existirian vn => v(n-1) y v(n-1) => vn y dejaria de ser un grafo dirigido. Es por esto que paso a paso tenemos una unica manera de conectar los vertices / dout(vi) = i-1 y que G sea un grafo dirigido.
+
+
+4) Caso base: |V(G)| = 1
+QvQ: Para todo grafo de 1 nodo, si |X(G)| >= 1 => G es conexo.
+No existe ningun grafo de un nodo con |X(G)| >= 1. Por lo tanto la implicacion es verdadera.
+
+HI: Para todo i < n. Si |V(G)| = i y |X(G)| > ((i-1)*(i-2))/2 => G es conexo
+
+
+Paso inductivo:
+
+Supongo G' tal que |V(G')| = n y |X(G')| > ((n-1)*(n-2))/2
+
+Elijo un vertice cualquiera (v).
+
+Pueden pasar 2 cosas:
+
+a)d(v) = n-1:
+
+Podemos ver que este grafo es trivialmente conexo, ya que para 2 vertices cuales quiera "u", "w" distintos de "v" se puede encontrar el camino P: u->v->w. Y "v" por su grado tambien tiene un camino hasta cualquier nodo "u" P: v->u.
+
+b)d(v) < n-1:
+
+Saco el vertice elegido, ahora G' tiene n-1 vertices, y como minimo ((n-1)*(n-2))/2 + 1 - n + 2 aristas. Si hacemos cuentas (la hice en papel) podemos ver que ese numero minimo de vertices es mayor a ((n-2)*(n-3))/2. Por lo tanto, por HI G' es conexo con n-1 vertices. Ahora si volvemos a agregar el vertice quitado, ese vertice va a estar conectado a por lo menos un vertice del grafo con (n-1) aristas. Supongamos que "v" es adyacente a "w" y se quiere llegar a cualquier otro nodo "u". Sabemos que existe P1: w->...->u, entonces podemos afirmar que existe camino de "v" a "u" haciendo P2: v->w y luego siguiendo P1. Por lo tanto, G' con |V(G')| = n es conexo.
+
+
+Veamos que al elegir el vertice no existe "v" tal que d(v) = 0. G' tiene n vertices y como minimo (((n-1)*(n-2))/2) + 1 vertices. 
+(n-1)*(n-2))/2 es la cantidad de vertices necesaria para formar un grafo completo de (n-1) vertices. Por lo tanto es posible con esta cantidad de aristas formar un grafo de n vertices tal que existe un "w" con d(w) = 0. Esto implica que d(i) = n-2 para todo i != w. Se puede ver que esta es la unica configuracion tal que existe algun nodo con grado 0. Pero ahora nos falta agregar una arista, y como el subgrafo de n-1 vertices esta completo, lo unico que podemos hacer es conectar w con algun nodo del subgrafo, lo que dejaria d(w) = 1. Entonces no es posible hacer un grafo G de N vertices con |X(G')| > ((n-1)*(n-2))/2 tal que algun nodo tenga grado 0.
+
+
+5) Sabemos que los caminos no pueden ser iguales, pero ambos parten de "v" y llegan a "w". Por lo tanto en algun vertice, los caminos se separan. LLamemos ese vertice "vi". Entonces "vi" pertenece a P y a Q.
+Ademas, sabemos que en algun momento los caminos se vuelven a juntar, ya que ambos terminan en "w". Llamemos al primer vertice en donde se juntan "vj". Entonces tenemos 2 caminos cuyas  aristas son completamente distintas entre "vi" y "vj". El primero es P(vi, vj) y el segundo Q(vi, vj). Como ambos caminos no comparten ninguna arista ni ningun vertice intermedio podemos ver que tenemos un ciclo cuyas aristas pertenecen unicamente a P y Q.
+
+6)Suponemos que hay 2 caminos disjuntos en vertices (P y Q) de igual longitud (m). Como G es conexo, entonces algun vertice de P esta conectado a algun vertice de Q.
+
+(Demostrar suponiendo que sacamos un nodo desde vi hasta vj con i = cantidad de pasos maxima entre (i, m-i). Idem j. Despues plantear i+j+1 > m)

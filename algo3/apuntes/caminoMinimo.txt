@@ -1,0 +1,53 @@
+Definicion:
+
+Un camino minimo entre v y u es un camino entre v y u tal que este sea el de minima longitud entre todos los caminos posible P(v,u).
+
+Tres variantes de caminos minimos:
+
+* Unico origen - unico destino:
+
+Se quiere saber el camino minimo entre 2 vertices especificos.
+
+No hay un algoritmo especificamente para esto. Cuando se quiere algo asi se usan algoritmos de unico origen a multiples destinos.
+
+* Unico origen - multiples destinos:
+
+Se quiere determinar un camino minimo de un vertice especifico al resto de los vertices de G.
+
+* Multiples origenes - multiples destinos:
+
+Se quiere saber un camino minimo entre todo par de vertices de G.
+
+Proposicion copada:
+
+Todo subcamino de un camino minimo es camino minimo.
+
+Unico origen - Multiples destinos:
+
+Si el digrafo es no pesado usamos BFS y punto, ya que BFS nos va a dar la distancia minima hacia el vertice elegido para todos los otros vertices. Esta complejidad queda en O(m).
+
+Si el digrafo es pesado tenemos varias opciones:
+
+La primera es el algoritmo de Dijkstra. Algo mucho muy importante es que este algoritmo sirve si y solo si las aristas son todas POSITIVAS.
+
+Este algoritmo construye un arbol de caminos minimos, o sea, un arbol enraizado en v conteniendo un camino minimo desde v hacia todo otro vertice de V. Empezamos solamente con v y en cada iteracion agregamos el vertice mas cercano a v de entre todos los que todavia no estan en el arbol.
+
+La complejidad de dijkstra O(min{n^2, mlog(n)}).
+
+Otra opcion es BellMan-Ford:
+
+Esta opcion sirve cuando tambien hay aristas negativas. Pero pero pero no pueden haber ciclos de longitud negativa, ya que ahi el problema esta mal definido.
+
+Alterminar la k-esima iteracion, el algoritmo encuentra todos los caminos mınimos desde v con, a lo sumo, k arcos. Por como funciona deberia terminar en N-1 iteraciones. Igualmente, si en alguna iteracion no se nota ninguna mejora el algoritmo tambien se puede dar por terminado. Este algoritmo es copado para encontrar ciclos de longitud negativa, ya que si el algoritmo no termina en N iteraciones quiere decir que hay un ciclo negativo. El costo de este algoritmo tambien es O(nm). Osea, si podes usar dijkstra usa dijkstra.
+
+Multiples origenes - Multiples destinos:
+
+Para estos algoritmos definimos la matriz de distancias. La misma tiene en la posicion ij la longitud del camino minimo desde i hasta j. En caso que no haya camino posible se coloca inf.
+
+Algoritmo de Floyd:
+
+Es una idea parecida a la de BellMan-Ford. Iniciamos la matriz seteando todo a infinito, y para toda arista v->w seteamos la posicion correspondiente en la matriz al largo de dicha arista.
+
+Al finalizar la iteracion k del algoritmo de Floyd, d[i][j] es la longitud de los caminos mınimos desde vi a vj cuyos vertices intermedios son elementos de {v1, . . . , vk}.
+
+La complejidad temporal del algoritmo es O(n^3).

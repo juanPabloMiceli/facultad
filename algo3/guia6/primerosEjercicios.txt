@@ -1,0 +1,13 @@
+Factorizacion:
+Recibimos m, n y el certificado que es un vector de factores de m entre (1,n).
+Recibimos m, n y un booleano que representa si existe o no factor de m entre (1,n).
+Para verificarlo armamos un vector V con los numeros de 2 a n-1 en O(n). Luego lo recorremos en orden haciendo m/V[i], si alguna division da entera entonces encontramos un factor de m. Esto tambien es O(n). Si encontramos algun i para que la division de entera entonces esperamos que el booleano recibido sea True. Caso contrario esperamos un False.
+Podemos ver que son 2 pasos polinomiales, asi que el algoritmo es polinomial.
+
+Min:
+Recibimos un conjunto A, un entero k y un booleano que representa si existe un elemento en A menor a k.
+Para verificar esto iteramos los elementos de A hasta encontrar un elemento menor a k. Si lo hacemos esperamos que el booleano recibido sea True. Caso contrario deberia ser False. Podemos ver que el algoritmo es O(|A|).
+
+MaxFlow:
+Recibimos una red N con fuente s y sumidero t, un natural f y un booleano que representa si N tiene flujo mayor o igual a f.
+

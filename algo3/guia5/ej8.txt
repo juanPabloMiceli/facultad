@@ -1,0 +1,9 @@
+Hacemos un digrafo bipartito, con los conjuntos de nodos F y M. A la izquierda ponemos un nodo por cada familia y a la derecha un nodo por cada mesa. La "fuente" va a conectarse a todas las familias y la capacidad de (s->Fi) sera fi. Ademas el "sumidero" se va a conectar a todas las mesas y la capacidad de (Mi->t) sera mi. Por ultimo conectamos todos los nodos del conjunto F al conjunto M. La capacidad de la arista (Fi->Mj) sera cij.
+
+La unidad de flujo sera cada familiar que se va a sentar en la mesa.
+
+
+n = #F + #M = O(max{#F, #M})
+m = #F*#M  = O(#F*#M)
+U = min{sum(mi : M), sum(fi : F)} 
+La complejidad de resolver el modelo es de O(m*n*U)

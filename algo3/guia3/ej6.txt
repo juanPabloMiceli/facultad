@@ -1,0 +1,1 @@
+Tenemos O(k) para sacar el peso de una arista. Entonces O(n^2*k) para sacar el peso de todas las aristas porque tenemos un grafo denso. Ahora podemos sacar el AGMin en O(n^2) con Prim o Kruskal y listo el pollo.

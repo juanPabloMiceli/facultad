@@ -1,0 +1,4 @@
+Hacemos Floyd en O(n^3).
+
+Ahora vamos arista por arista (v1->v2) y para todo par de nodos (s,t) viendo si:
+d(s,t)-d(s,v1)-d(s,v2) = c(v1,v2). O(m*2^n)

@@ -1,0 +1,6 @@
+Dada la matriz chequeamos en cada posicion que en efecto no haya ningun otro camino minimo menor al obtenido.
+
+Para eso comparamos el camino actual P(v,w) con el mejor camino que se puede obtener si se pasa primero por el nodo 1 y despues del nodo 1 al nodo w. O sea, P(v,1),P(1,w). Hacemos eso para todos los caminos posibles. En total te queda O(n^3) todo.
+
+Ahora falta devolver el grafo minimal en aristas. Empezamos creando el grafo completo en O(n^2). Ahora para toda arista (v->w)vemos si al sacarla existe un camino de P(v,w) de mismo costo. Si existe entonces la podemos sacar, si no existe entonces no la podemos sacar. Para ver si existe podemos usar la matriz de floyd de entrada y conseguimos ese numero en O(n). Resultando todo en O(n^3).
+

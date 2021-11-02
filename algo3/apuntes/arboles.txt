@@ -1,0 +1,70 @@
+Definiciones:
+
+*Un arbol es un grafo conexo sin circuitos simples.
+
+*Una arista de G es puente si al sacarla se aumentan la cantidad de componentes conexas. En un arbol toda arista es puente.
+
+Lemas:
+
+La union de 2 caminos simples distintos entre 2 vertices contiene un circuito simple.
+
+Lema 2: Sea G un grafo conexo y e una arista de G. 
+G\{e} es conexo <=> e pertenece a un circuito simple de G.
+
+Definicion 3:
+Una hoja es un vertice de grado 1.
+
+Lema 3: Todo arbol de mas de 1 vertice tiene al menos 2 hojas.
+
+Lema 4: En un arbol, m = n-1.
+
+Definicion 4: Un bosque es un grafo sin circuitos simples. Osea, un conjunto de arboles.
+
+Corolario 1: Sea G un bosque, con C componentes conexas. Entonces m = n-C.
+
+Corolario 2: Sea G = (V,X) con C componentes conexas. Entonces m >= n-C. 
+
+
+Arboles enraizados:
+
+Definiciones:
+
+* Estos son arboles que tienen un vertice distinguido al que llamamos raiz. Queda definido un arbol dirigido considerando caminos orientados desde la raiz al resto de los vertices.
+
+* Vertice interno = No soy raiz ni hoja.
+
+* Nivel de un vertice v = dist(v, raiz)
+
+* Altura de h = max(dist(v, raiz)) for v in V.
+
+
+Arboles generadores:
+
+Definicion: 
+
+Un arbol generador de un grafo G es un subgrafo generador de G que es arbol. Osea, tiene la minima cantidad de aristas para conectar los nodos de G.
+
+Teorema:
+
+Todo grafo conexo tiene al menos un arbol generador. Si el grafo es un arbol entonces existe un unico AG y es el mismo grafo.
+
+Para encontrar estos arboles generadores podemos usar 2 algoritmos. BFS y DFS, el primero recorre el grafo a lo ancho y el segundo lo hace en profundidad.
+ 
+La complejidad de estos algoritmos es O(m).
+
+Arbol generador minimo:
+
+Esto surge cuando los aristas tienen peso. Y ahora queremos que la suma de las aristas del arbol generador sea la minima posible. Para eso no nos sirven bfs/dfs porque no distinguen pesos.
+
+Para eso tenemos 2 algoritmos:
+
+Prim:
+Este construye 2 conjuntos, uno de vertices que empieza inicializado con un vertice cualquiera y otro de aristas que empieza vacio. En cada iteracion se agrega un elemento a cada uno de estos conjuntos. Cuando el conjunto de vertices ya tiene a todos los vertices del grafo original el algoritmo termina y el conjunto de aristas definen un AGM de G.
+
+Para elegir el proximo nodo y la proxima arista se busca la arista de menor costo entre las que tienen un extremo en Vt y otro en V\Vt.
+
+Kruskal:
+Ordena las aristas de menor a mayor, y despues va eligiendo la arista de menor peso que no forme un ciclo con las ya elegidas. Se hace esto N-1 veces y listo. Empezas con un bosque de N componentes conexas y cada vez vas uniendo 2 componentes conexas hasta que te queda una sola.
+
+
+La complejidad de estos algoritmos es O(min{n^2, mlog(n)})

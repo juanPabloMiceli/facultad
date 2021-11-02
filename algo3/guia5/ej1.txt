@@ -1,0 +1,12 @@
+1a) La capacidad de cada arista es par => el valor del flujo maximo es par
+
+
+
+
+1b) La capacidad de cada arista es par => existe un flujo maximo en el cual el flujo sobre cada arista es par.
+
+Veamos esto por induccion en la iteracion del algoritmo:
+
+HI: En el paso k, el flujo que pasa por cada arista es par para todo k entre 0 y la cantidad de iteraciones.
+
+CB: 

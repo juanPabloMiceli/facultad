@@ -1,0 +1,7 @@
+Queremos ver si un grafo conexo es bipartito o no.
+
+Cada nodo tiene ademas un campo que indica a que particion pertenece: ninguno, V1 o V2.
+
+Todos los nodos empiezan con ese campo iniciado en "ninguno". Elegimos un nodo cualquiera "v" y lo seteamos a V1. Vamos a ir haciendo DFS, vamos alternando entre V1 y V2 al marcar los nodos. Ahora mientras hacemos DFS chequeamos que el campo de todos los adyacentes de cada nodo sean o la particion contraria o "ninguno". Si encontramos algun nodo "t" que tiene algun nodo adyacente "s" en la misma particion que si mismo entonces el grafo no es bipartito. Ademas si queremos devolver el ciclo formado entre "t" y "s" vamos a ir subiendo por sus padre marcando los nodos visitados. En el momento en el que al subir ese nodo ("w") ya hubiese estado marcado quiere decir que ese es el nodo de menor nivel que pertenece al ciclo que contiene a (s->t). El ciclo queda entonces c:{P(w,s),(s->t),P(t,w)}.
+
+Para generalizar podemos agregar un nodo maestro que se conecte a todos los otros nodos. Ahora si hacemos DFS desde ese nodo vamos a tener C ramas distintas en el DFS donde cada rama representa a una componente conexa. Debemos aplicar el algoritmo visto en el inciso anterior mientras vamos creando cada rama, con la salvedad de que en ningun momento debemos considerar la particion del nodo maestro.

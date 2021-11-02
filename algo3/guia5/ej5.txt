@@ -1,0 +1,19 @@
+Para el modelo vamos a setear las capacidades de todas las aristas en 1. Si pensamos en cada arista como un camino y en el flujo como una persona esto indica que cada camino podra ser visitado unicamente por una persona. Nosotros queremos saber cuantos caminos disjuntos existen que salgan de s y lleguen a t tal que cada camino sea caminado exactamente por una persona. Es por eso que al decir que la capacidad de cada arista es 1 estamos haciendo imposible que mas de una persona pase por el mismo camino.
+
+Ahora para maximizar esta cantidad de caminos podemos correr el algoritmo de EK para que nos de el maximo flujo que puede salir desde S y que llegue a T sin superar la capacidad de ningun camino.
+
+
+Demo:
+QvQ: Si existe camino disjunto lo encuentro y no encuentro nada que no sea camino disjunto.
+
+Supongamos que existen K caminos disjuntos.
+
+Supongamos que no encuentro algun camino:
+Entonces tenemos K caminos disjuntos pero solo encontramos K-1. Esto quiere decir que el algoritmo EK nos devuelve K-1. Por lo que el flujo maximo es K-1. Pero si el camino K es verdaderamente un camino disjunto entonces podemos agregar una unidad de flujo que lo recorra enteramente y estariamos trabajando con un flujo mayor al flujo maximo sin superar ninguna capacidad. Esto quiere decir que en verdad el flujo maximo era mayor a K-1.
+
+Supongamos que encuentro algun camino extra:
+Tenemos K caminos pero encontramos K+1 caminos. Si el camino K+1 no es disjunto entonces existe algun camino que comparta alguna arista con el camino K+1. Supongamos que esa arista es (u->v), entonces la misma es usada 2 veces y su flujo es 2. Pero su capacidad maxima era 1, entonces estariamos sobrepasando la capacidad y rompiendo el camino (u->v). Por lo cual tenemos un absurdo ya que EK no tiene permitido superar ninguna capacidad.
+
+---------------------
+
+La complejidad de EK es O(n*m*Q) con Q maxima capacidad de la arista (O sea 1) (O(n*m)).

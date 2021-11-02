@@ -1,0 +1,8 @@
+Queremos encontrar el ancho de banda de una red dada. Osea, el minimo ancho de banda que se consigue para caminos entre todo par de vertices.
+
+Podemos multiplicar por -1 todos los pesos y buscar el AGMin con kruskal. Este va a empezar agregando de menor a mayor todas las aristas hasta tener una unica componente conexa. Cuando ponemos la ultima arista nos fijamos su peso y esa es el ancho de banda de nuestra red. Esto lo hacemos en O(min{n^2,mlog(n)}).
+
+Ahora queremos ver que pasa si podemos invertir en hacer que i aristas tengan ancho de banda infinito para i {1, n-1}.
+
+Teniendo el AGMin del inciso anterior podemos tener ordenados los pesos de las aristas pertenecientes al arbol de menor a mayor en una pila por ejemplo. El valor que queremos lo podemos obtener desencolando de la pila i veces y mirando el elemento que ahora esta en el tope, ya que quiere decir que sera la peor arista del arbol.
+

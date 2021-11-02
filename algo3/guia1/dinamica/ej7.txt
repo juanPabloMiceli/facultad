@@ -1,0 +1,24 @@
+                            -inf                    c < 0 or c > j 
+astro(precios, j, c) =      0                       j <= -1 and c >=0
+                            max(I1, I2, I3)         caso contrario
+
+I1: -precios[j]+astro(precios, j-1, c-1)
+I2:  precios[j]+astro(precios, j-1, c+1)
+I3: astro(precios, j-1, c)
+
+
+
+caso base:
+Si tengo asteroides negativos o si tengo mas asteroides que dias -inf.
+
+Si j == -1:
+return 0
+
+Recursion:
+
+Posibilidades:
+Compro: Pierdo la plata del asteroide + astro(precios, j-1, c-1)
+Vendo: Gano la plata del asteroide + astro(precios, j-1,c+1)
+Nada: No gano ni pierdo + astro(precios, j-1, c)
+
+

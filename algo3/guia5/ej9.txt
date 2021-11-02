@@ -1,0 +1,14 @@
+Tenemos un digrafo bipartito con los conjunos MAT y VAL. MAT es el conjunto de posiciones de la matriz donde mat_{ij} es el elemento en la fila i columna j y VAL es el conjunto que contiene un nodo por cada suma de las filas y cada suma de las columnas. Llamaremos VALf{i} a la suma de la fila i y VALc{i} a la suma de la columna i. 
+
+Vamos a conectar la fuente a todas las posiciones de la matriz. Luego conectamos todos los nodos de la fila i (mat_{ix} para todo x in #cols) a VALf{i} y todos los nodos de la columna i (mat_{xi} para todo x in #filas) a VALc{i}. Por ultimo todos los nodos de VAL los conectamos al sumidero con aristas de la capacidad que deba sumar dicha arista o columna.
+
+A priori la capacidad de las aristas que salen de la fuente y del conjunto MAT podria ser infinita, pero al trabajar con numeros naturales la podemos acotar por el maximo entre las sumas deseadas.
+
+Entonces la complejidad queda O(m*n*U):
+
+n = (#filas*#cols) + (#filas+#cols) = O(#filas*#cols) 
+m = (#filas*#cols) + 2*(#filas*#cols) + (#filas+#cols) = O(#filas*#cols) 
+U = maximo valor entre las sumas deseadas.
+
+Demo: Sabemos que la suma de las filas y la suma de las columnas es igual.
+Supongamos que el flujo obtenido es menor al deseado. Es decir, existe alguna fila y columna cuya suma es menor a la deseada. Esto quiere decir que los flujos que van al sumidero desde estos nodos aun tienen capacidad para albergar flujo. Especificamente, tienen tanta capacidad extra como la diferencia entre la capacidad deseada y la obtenida. Y sabemos que en los nodos de la fuente tenemos capacidad extra ya que los mismos hay tanta capacidad como en el valor maximo de las sumas. Es por eso que podriamos seguir aumentando el flujo en esos caminos hasta que se llenen los ejes que van de la suma al sumidero. Y eso pasará exactamente cuando los valores de las sumas sean exactamente los deseados. Luego en las aristas (mat{ij}->VALf{i}) y (mat{ij}->VALc{j}) tendremos el valor deseado para poner en la posicion ij de la matriz.

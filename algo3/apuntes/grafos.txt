@@ -1,0 +1,27 @@
+Teorema 1: Dado un grafo G, la suma  de los grados de sus vertices es igual a 2 veces el numero de aristas. O sea:
+
+sum{v \in V}{d(v)} = 2*m
+
+Corolario 1: Para todo grafo, la cantidad de vertices de grado impar es par.
+
+Propiedad 1: Si G es completo y tiene n vertices entonces:
+
+     (n)(n-1)
+m = ---------- 
+        2
+
+
+Definiciones:
+
+* Recorrido: Secuencia de vertices y aristas que empieza en v0 y termina en vk.
+
+* Camino: Es un recorrido que no repite vertices.
+
+* Seccion de un camino: Subsecuencia de un camino.
+
+* Circuito: Recorrido que empieza y termina en el mismo vertice.
+
+* Ciclo: Circuito de 3 o mas vertices que no pasa 2 veces por el mismo vertice.
+
+Proposicion 1: Si un recorrido P entre v y w tiene longitud d(v,w) entonces P es un camino.
+

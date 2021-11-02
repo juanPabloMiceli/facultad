@@ -1,0 +1,17 @@
+matriz = [
+    [-10,5],
+    [-1,-5]]
+
+El alg tiene que devolver la vida minima necesaria para ir de si mismo hasta el final. Una posicion no borde tiene que elegir entre ir para abajo o la derecha. Va a ir hacia el que devuelva la minima vida necesaria.
+
+Caso base:
+Si estoy en la llegada y el costo es positivo entonces devuelvo 0. Caso contrario devuelvo el robo de vida + 1. (EC1)
+
+Recursion:
+Calculo hacia la derecha.(C1)
+Calculo hacia abajo.(C2)
+Devuelvo max(min(C1,C2) + (EC1), 0)
+
+                    inf                                si estamos afuera de la matriz
+ej9[m, i, j]:       max(0, -m[i,j]+1)                  si estamos en el final
+                    max(0, -m[i,j]+1) + min(ej9[m,i,j+1],ej9[m,i++1,j])     c.c.

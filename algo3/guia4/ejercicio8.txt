@@ -1,0 +1,5 @@
+Calculamos Dijkstra desde s hacia todos los nodos. O(min{n^2, m*log(n)})
+Calculamos Dijkstra desde t hacia todos los nodos. O(min{n^2, m*log(n)})
+Vamos arista por arista viendo si d(s,t)-d(s,v1)-d(s,v2) = c(v1,v2) O(m)
+Si cumple es st-eficiente y la volamos.
+Calculamos camino minimo de nuevo desde s. Si encontramos lo devolvemos, si no devolvemos vacio. 
