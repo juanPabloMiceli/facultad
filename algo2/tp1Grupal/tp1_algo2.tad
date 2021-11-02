@@ -1,0 +1,185 @@
+TAD Pos ES Tupla(Nat, Nat)
+TAD Dir ES Bool -- true = horizontal, false = vertical
+TAD Estado ES String
+
+
+TAD Mapa
+géneros mapa
+
+igualdad observacional
+
+(∀ m1, m2 : mapa) m1 =obs m2 ⇔ (∀ p : pos) rio?(m1, p) =obs rio?(m2,p)
+
+observadores
+
+rio?     : mapa × pos → bool
+
+generadores
+
+crearMapa   : → mapa
+
+crearRio    : mapa × pos × dir → mapa
+
+axiomas
+
+rio?(crearMapa(), p) ≡ false
+rio?(crearRio(m, p, dir), p') ≡ 
+if p =obs p'
+    then true
+    else 
+        if dir = VERTICAL
+            then if π₁(p) =obs π₁(p') then true else false fi
+            else if π₂(p) =obs π₂(p') then true else false fi
+        fi
+        
+fi
+
+FIN TAD
+
+TAD Turno ES Nat
+TAD Nivel ES Nat
+
+
+TAD Juego
+géneros juego
+
+igualdad observacional
+
+(∀ j1, j2 : juego) (j1 =obs j2 ⇔  (∀ p : pos) ( (p ∈ {"casa", "comercio"}  ⇒L obtenerEstado(mapa(j1), p) =obs obtenerEstado(mapa(j2), p) )  ∧
+                                                (obtenerNivel(j1, p) =obs obtenerNivel(j2, p))  ∧  obtenerTurno(j1) =obs obtenerTurno(j2)  
+                                ))
+
+observadores
+obtenerNivel : juego j × pos p → nivel
+               { obtenerEstado(j, p) ∈ {"casa", "comercio"} }
+                       
+obtenerMapa : juego → mapa
+
+obtenerEstado : juego × pos → estado
+
+obtenerTurno : juego → turno
+
+generadores
+
+crearJuego : mapa  → juego
+
+crearConstruccion : juego j × pos p × estado e  → juego j'
+                    { obtenerEstado(j, p) =obs "tierra" ∧
+                      e ∈ {"casa","comercio"}
+                    }       
+
+incrementarTurno : juego → juego
+                    { construccionCreada?(j) = true}
+otras operaciones
+
+posicionesCasas    : juego → conj(pos)
+
+
+distAbsoluta        : nat × nat → nat 
+distManhattan       : pos × pos → nat
+estaCerca           : pos × pos → bool
+
+masCercanos         : conj(pos) × pos → conj(pos)
+maxNivelConjunto    : conj(pos) → nivel
+
+construccionCreada? : juego → bool
+
+axiomas
+
+obtenerNivel(crearJuego(m), p) ≡ 0
+obtenerNivel(crearConstruccion(j, p, e), p') ≡
+if p = p'
+  then if obtenerEstado(j, p) = "casa"
+          then 0
+          else maxNivelConjunto(masCercanos(posicionesCasas(j), p))
+       fi
+  else obtenerNivel(j, p)
+fi
+obtenerNivel(incrementarTurno(j), p) ≡ obtenerNivel(j, p) + 1 
+
+
+obtenerMapa(crearJuego(m))              ≡ m
+obtenerMapa(crearConstruccion(j, p, e)) ≡ obtenerMapa(j)
+obtenerMapa(incrementarTurno(j))        ≡ obtenerMapa(j) 
+
+
+obtenerEstado(crearJuego(m), p) ≡ if rio?(m, p) then "rio" else "tierra" fi
+obtenerEstado(crearConstruccion(j, p, e), p') ≡
+if p =obs p'
+    then e
+    else obtenerEstado(j, p')
+fi
+obtenerEstado(incrementarTurno(j), p) ≡ obtenerEstado(j, p)
+
+
+obtenerTurno(crearJuego()) ≡ 0
+obtenerTurno(crearConstruccion(j, p, e)) ≡ obtenerTurno(j)
+obtenerTurno(incrementarTurno(j)) ≡ obtenerTurno(j) + 1
+
+
+posicionesCasas(crearJuego()) ≡ ∅
+posicionesCasas(crearConstruccion(j, p, e)) ≡
+  if e = "casa" then Ag(e, posicionesCasas(j)) else posicionesCasas(j)) fi
+posicionesCasas(incrementarTurno(j)) ≡ posicionesCasas(j) 
+
+
+distAbsoluta(n, m) ≡ max(n, m) - min(n, m)
+
+
+distManhattan(p1, p2) ≡ distAbsoluta(π₁(p1), π₁(p2)) + distAbsoluta(π₂(p1), π₂(p2))
+
+
+estaCerca(p1, p2) ≡ if distManhattan(p1, p2) ≤ 3 then true else false fi
+
+
+masCercanos(cp, p) ≡
+  if ∅?(cp)
+    then ∅
+    else if estaCerca(dameUno(cp), p)
+           then Ag(dameUno(cp), masCercanos(sinUno(cp))
+           else masCercanos(sinUno(cp))
+         fi 
+  fi
+
+
+maxNivelConjunto(cp) ≡
+  if ∅?(cp)
+    then 0
+    else max( obtenerNivel(dameUno(cp)), maxNivelConjunto(sinUno(cp)) )
+  fi
+
+
+construccionCreada?(crearJuego()) ≡ false
+construccionCreada?(crearConstruccion(j, p, e)) ≡ true
+construccionCreada?(incrementarTurno(j)) ≡ false
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

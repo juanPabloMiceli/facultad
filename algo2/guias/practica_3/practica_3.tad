@@ -1,0 +1,72 @@
+TAD ColaAcotada
+géneros cacotada
+
+observadores basicos
+  verCola   : cacotada → cola(nat)
+  capacidad : cacotada → nat
+
+generadores
+  vacia   : nat              → cacotada
+  encolar : nat × cacotada c → cacotada     { tamaño(verCola(c)) < capacidad(c) }
+
+axiomas
+  verCola(vacia(c))       ≡ vacia
+  verCola(encolar(a, c))  ≡ encolar(a, verCola(c))
+  capacidad(vacia(n))     ≡ n
+  capacidad(encolar(a,c)) ≡ capacidad(c)
+
+Fin TAD
+
+
+cacotada se representa con estr, donde
+
+estr ES tupla
+⟨inicio: nat,
+ fin   : nat,
+ elem  : array[0,...,n-1] de nat⟩
+
+invariante de representación
+1) Necesito que el inicio de la cola esté almacenado entre las posiciones 0 y n
+2) Necesito que el fin de la cola esté marcando al inicio más la cantidad de elementos (modulo n)
+--Si el inicio de la cola está en la pos 0 y hay un solo elemento. El fin está en la pos 1.
+3) Necesito que todo elemento de la cola sea mayor o igual a 0.
+
+Rep: estr → bool
+
+  Rep(e) ≡  true ⇔
+            e.inicio < long(e.elem) ∧ e.fin < long(e.elem)                                                                                                                  ∧L
+            [ (e.inicio = e.fin ∧ (intevaloLleno(e.elem, 0, long(e.elem) - 1) ∨ intervaloVacio(e.elem, 0, long(e.elem) - 1)))                                               ∨L
+              (e.inicio < e.fin ∧ intervaloVacio(e.elem, 0, e.inicio - 1)  ∧ intervaloLleno(e.elem, e.inicio, e.fin - 1) ∧ intervaloVacio(e.elem, e.fin, long(e.elem) - 1)) ∨
+              (e.fin < e.inicio ∧ intervaloLleno(e.elem, 0, e.fin -1) ∧ intervaloVacio(e.elem, e.fin, e.inicio - 1) ∧ intervaloLleno(e.elem, e.inicio, long(e.elem) - 1))    ]
+  
+
+  intervaloVacio(in elem: array[Nat], in inicio: Nat, in fin: Nat) → res: bool --Se fija que todo lo que está adentro de los bordes sea = 0. Incluyendo los bordes mismos
+    {fin < long(elem) ∧ inicio < fin}
+
+    {res = true ⇔ (∀i : Nat)(inicio ≤ i ≤ fin ⇒L elem[i] = 0)}
+
+
+  intervaloLleno(in elem: array[Nat], in inicio: Nat, in fin: Nat) → res: bool --Se fija que todo lo que está adentro de los bordes sea ≠ 0. Incluyendo los bordes mismos
+    {fin < long(elem) ∧ inicio < fin}
+
+    {res = true ⇔ (∀i : Nat)(inicio ≤ i ≤ fin  ⇒L elem[i] ≠ 0)}
+
+
+función de abstracción
+Abs: estr → cacotada  {Rep(e)}
+
+  Abs(e) ≡ arrayACola(e.elem, e.inicio, e.fin)
+ 
+
+  arrayACola: secu(nat) s × nat inicio × nat fin → cacotada {inicio < long(s) ∧ fin < long(s)} 
+  
+  arrayACola(s, inicio, fin) ≡ 
+    if inicio = fin ∧ s[inicio] = 0 --Si la cola está vacía
+      then vacia(long(s)) 
+      else
+          if inicio = long(s) - 1 --Si estoy en la final de la secuencia
+            then encolar(s[inicio], arrayACola(s, 0, fin))
+            else encolar(s[inicio], arrayACola(s, inicio + 1, fin))
+          fi
+    fi
+                                    

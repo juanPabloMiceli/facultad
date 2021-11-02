@@ -1,0 +1,122 @@
+TAD SimCity_V2
+géneros juego
+
+igualdad observacional
+
+
+
+
+generadores
+
+unirPartidas: juego j₁ × juego j₂ → juego    { seaTodoLegal(j₁, j₂) }
+
+observadores
+popularidad: juego → nat
+
+otras operaciones
+seaTodoLegal: juego j₁ × juego j₂ → bool
+posicionesConstrucciones: juego j → conj(pos)
+noHayRios: conj(pos) cp × juego j → bool 
+
+posicionesMaximoNivel: juego j × conj(pos) cp × nivel → conj(pos)    { (∀p : pos)(p ∈ cp ⇒L hayConstruccion(j, p)) }
+noHayMaximoNivel: conj(pos) cp × juego j → bool
+ 
+casaOComercio             : juego j1 × juego j2 × pos p → bool    {hayConstruccion(j1, p) ∧ hayConstruccion(j2, p)}
+maxConstrucciones2Partidas: juego j1 × juego j2 × pos p → estado  {hayConstruccion(j1, p) ∧ hayConstruccion(j2, p)}
+nivelUnion         : juego j1 × juego j2 × pos p → nat     {hayConstruccion(j1, p) ∧ hayConstruccion(j2, p)}
+
+aux: conj(pos) p × juego j × estado e → conj(pos) {e ∈ {"casa", "comercio"} ∧ (∀p : pos)(p ∈ cp ⇒L hayConstruccion(j, p))}
+
+axiomas
+
+casaOComercio(j1, j2, p) ≡ ¬(obtenerConstruccion(j1, p) = obtenerConstruccion(j2, p))
+
+maxConstrucciones2Partidas(j1, j2, p) ≡ 
+  if max(obtenerNivel(j1, p), obtenerNivel(j2, p)) = obtenerNivel(j1, p)
+    then obtenerConstruccion(j1, p)
+    else obtenerConstruccion(j2, p)
+  fi
+
+nivelUnion(j1, j2, p) ≡ max(obtenerNivel(j1, p), obtenerNivel(j2, p))
+
+obtenerConstruccion(unirPartidas(j1, j2), p) ≡
+  if casaOComercio(j1, j2, p)
+    then maxConstrucciones2Partidas(j1, j2, p)
+    else
+      if obtenerConstruccion(j1, p) = "casa"
+        then "casa"
+        else "comercio"
+      fi
+  fi
+
+
+
+obtenerNivel(unirPartidas(j1, j2), p) ≡ 
+  if obtenerConstruccion(unirPartidas(j1, j2), p) = "casa"
+    then nivelUnion(j1, j2, p) 
+    else max(nivelUnion(j1, j2, p) , maxNivelConjunto(masCercanos(posicionesCasas(unirPartidas(j1, j2)), p)))
+  fi
+
+hayConstruccion(unirPartidos(j1, j2), p) ≡ hayConstruccion(j1) ∨ hayConstruccion(j2)
+construccionCreada(unirPartidas(j1, j2), p) ≡ false --Si unis partidas antes de pasar de turno hay que crear algo nuevo. Por que? NO HAY PO QUE
+posicionesComercio(unirPartidas(j1, j2)) ≡ aux(posicionesComercio(j1), unirPartidas(j1, j2), "comercio") ∪ aux(posicionesComercio(j2), unirPartidas(j1, j2), "comercio")
+
+posicionesCasa(unirPartidas(j1, j2)) ≡ aux(posicionesCasa(j1), unirPartidas(j1, j2), "casa") ∪ aux(posicionesCasa(j2), unirPartidas(j1, j2), "casa")
+
+
+aux(cp, j, e) ≡
+  if vacía?(cp)
+    then ∅
+    else
+      if obtenerConstruccion(j, dameUno(cp)) = e
+        then Ag(dameUno(cp), aux(cp, j))
+        else aux(cp, j)
+      fi
+  fi
+
+
+obtenerMapa(unirPartidas(j1, j2)) ≡ juntarMapas()
+
+
+popularidad(crearJuego(m))              ≡ 1
+popularidad(crearConstruccion(j, p, e)) ≡ popularidad(j)
+popularidad(incrementarTurno(j))        ≡ popularidad(j)
+popularidad(unirPartidas(j1, j2))       ≡ popularidad(j1) + popularidad(j2)
+
+
+
+posicionesConstrucciones(j) ≡ posicionesCasas(j) ∪ posicionesConstrucciones(j)
+
+
+seaTodoLegal(j₁, j₂) ≡ noHayRios(posicionesConstrucciones(j1), j2) ∧L
+                       noHayRios(posicionesConstrucciones(j2), j1) ∧L
+                       noHayMaximoNivel(posicionesMaximoNivel(j1, posicionesConstrucciones(j1), maxNivelConjunto(j1, posicionesConstrucciones(j1)), j2) ∧
+                       noHayMaximoNivel(posicionesMaximoNivel(j2, posicionesConstrucciones(j2), maxNivelConjunto(j2, posicionesConstrucciones(j2)), j1) ∧
+
+
+
+
+
+
+
+noHayRios(cp, j) ≡ 
+  if vacía?(cp)
+    then true
+    else ¬( rio?(obtenerMapa(j), dameUno(cp)) ) ∧ noHayRios(sinUno(cp), j)
+  fi
+
+posicionesMaximoNivel(j, cp, nivelMaximo) ≡ 
+  if vacía?(cp)
+    then ∅
+    else
+      if obtenerNivel(j, dameUno(cp)) = nivelMaximo
+        then Ag(dameUno(cp), posicionesMaximoNivel(j, cp, nivelMaximo))
+        else posicionesMaximoNivel(j, cp, nivelMaximo)
+      fi
+  fi  
+
+noHayMaximoNivel(cp, j) ≡ 
+  if vacía?(cp)
+    then true
+    else ¬( hayConstruccion(j, dameUno(cp)) ) ∧ noHayMaximoNivel(sinUno(cp), j)
+  fi

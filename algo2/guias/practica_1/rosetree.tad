@@ -1,0 +1,128 @@
+ TAD Rosetree(α)
+
+géneros rosetree(α)
+
+igualdad observacional
+  (∀ r₁, r₂ : rosetree) (r₁ =obs r₂ ⇔ (raiz(r₁)  =obs raiz(r₂) ∧ hijos(r₁) =obs hijos(r₂)))
+
+  
+observadores basicos
+  raiz  : rosetree(α) → α
+  hijos : rosetree(α) → rosetree(α)
+
+generadores
+  rose  : α × secu(rosetree(α)) → rosetree(α)
+
+otras operaciones
+  altura   : rosetree(α) → nat
+  alturas  : secu(rosetree(α)) s → secu(nat)
+              { ¬ vacía?(s) }
+  maxDeSec : secu(nat) s → nat
+              { ¬ vacía?(s) }
+
+
+  esHoja?     : rosetree(α) → bool
+  #hojas      : rosetree(α) → nat
+  #hojasSecu  : secu(rosetree(α)) sr → nat
+                { ¬ vacía?(sr) }
+
+  podar       : rosetree(α) → rosetree(α)
+  podarSecu   : secu(rosetree(α)) → secu(rosetree(α))
+                { ¬ vacía?(sr) i}
+
+  ramas             : rosetree(α) × nat → secu(secu(α))
+  caminosRosetree   : rosetree(α) → secu(secu(α))
+  filtrarSecuencias : secu(secu(α)) × nat → secu(secu(α))
+  esMasChicaQueN    : secu(α) × nat → bool
+  ramasHijos        : secu(rosetree(α)) → secu(secu(α))
+  prefijarEnTodos   : α × secu(secu(α)) → secu(secu(α))
+
+
+axiomas
+  raiz(rose(a, s))  ≡ a
+  hijos(rose(a, s)) ≡ s
+
+  altura(r) ≡ 
+    if vacía?(hijos(r))
+      then 0
+      else 1 + maxDeSec( alturas(hijos(r)) )
+    fi
+
+  alturas(r) ≡
+    if vacía?(fin(r))
+      then altura(prim(r))
+      else altura(prim(r)) • alturas(fin(r))
+    fi
+
+  maxDeSec(s) ≡
+    if vacía?(fin(s))
+      then prim(s)
+      else max( prim(s), maxDeSec(fin(s)) )
+    fi
+
+  esHoja?(r) ≡
+    if vacía?(hijos(r))
+      then true
+      else false
+    fi
+
+  #hojas(r) ≡
+    if esHoja?(r)
+      then 1
+      else #hojasSecu(hijos(r))
+    fi
+
+  #hojasSecu(sr) ≡
+    if vacía?(fin(sr))
+      then #hojas(prim(sr))
+      else #hojas(prim(sr)) + #hojasSecu(fin(sr))
+    fi
+
+  podar(r) ≡ 
+    if esHoja?(r)
+      then ⟨⟩
+      else rose(raiz(r), podarSecu(hijos(r)))
+    fi 
+
+  podarSecu(sr) ≡
+    if vacía?(fin(sr))
+      then podar(prim(sr))
+      else podar(prim(sr)) • podarSecu(fin(sr))
+    fi
+
+
+  ramas(r, n) ≡ filtrarSecuencias(caminosRosetree(r), n)
+
+
+  caminosRosetree(r) ≡
+    if vacía?(hijos(r))
+      then ⟨ ⟨raiz(r)⟩ ⟩
+      else prefijarEnTodos(raiz(r), ramasHijos(hijos(r))) 
+
+  
+  ramasHijos(sr) ≡
+    if vacía?(sr)
+      then ⟨⟩
+      else caminosRosetree(prim(sr)) & ramasHijos(fin(sr))
+    fi
+
+
+  filtrarSecuencias(ss, n) ≡ 
+    if vacía?(ss)
+      then ⟨⟩
+      else if esMasChicaQueN(prim(ss), n) 
+             then prim(ss) • filtrarSecuencias(fin(ss), n) 
+             else filtrarSecuencias(fin(ss), n)
+           fi
+    fi
+
+  esMasChicaQueN(s, n) ≡ if long(s) ≤ n then true else false fi 
+  
+  prefijarEnTodos(e, ss) ≡
+    if vacía?(ss)
+      then ⟨⟩
+      else (a • prim(ss)) • prefijarEnTodos(e, fin(ss))
+    fi
+
+
+Fin TAD 

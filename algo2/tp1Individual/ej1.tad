@@ -1,0 +1,95 @@
+TAD String  ES secu(Char)
+TAD Palabra ES String
+
+TAD Rosetree(α)
+
+géneros rosetree(α)
+
+igualdad observacional
+  (∀ r₁, r₂ : rosetree(α)) (r₁ =obs r₂ ⇔ (raiz(r₁)  =obs raiz(r₂) ∧ hijos(r₁) =obs hijos(r₂)))
+
+  
+observadores basicos
+  raiz  : rosetree(α) → α
+  hijos : rosetree(α) → rosetree(α)
+
+generadores
+  rose  : α × secu(rosetree(α)) → rosetree(α)
+
+otras operaciones
+  
+  palabrasPresentes : rosetree(char) × secu(palabra) → secu(palabra)
+  palabrasPosibles     : rosetree(char) → secu(palabra)
+  
+  filtrarPalabras   : secu(palabra) × secu(palabra) → secu(palabra)
+  ramasHijos        : secu(rosetree(char)) → secu(palabra)
+  prefijarEnTodos   : char × secu(palabra) → secu(palabra)
+
+
+axiomas
+  raiz(rose(a, s))  ≡ a
+  hijos(rose(a, s)) ≡ s
+
+  palabrasPresentes(r, sp) ≡ filtrarPalabras(palabrasPosibles(r), sp)
+
+
+  palabrasPosibles(r) ≡
+    if vacía?(hijos(r))
+      then ⟨ ⟨raiz(r)⟩ ⟩
+      else prefijarEnTodos(raiz(r), ramasHijos(hijos(r))) 
+    fi
+  
+  ramasHijos(sr) ≡
+    if vacía?(sr)
+      then ⟨⟩
+      else palabrasPosibles(prim(sr)) & ramasHijos(fin(sr))
+    fi
+
+
+  filtrarPalabras(sp1, sp2) ≡ 
+    if vacía?(sp1)
+      then ⟨⟩
+      else if está?( prim(sp1), sp2 )
+             then prim(sp1) • filtrarPalabras(fin(sp1), sp2) 
+             else filtrarPalabras(fin(sp1), sp2)
+           fi
+    fi
+
+  
+  prefijarEnTodos(e, ss) ≡
+    if vacía?(ss)
+      then ⟨⟩
+      else (e • prim(ss)) • prefijarEnTodos(e, fin(ss))
+    fi
+
+
+Fin TAD 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

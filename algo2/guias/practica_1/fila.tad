@@ -1,0 +1,73 @@
+TAD Persona ES String
+
+TAD Fila
+géneros fila
+
+igualdad observacional
+
+(∀ f1, f2 : fila) f1 =obs f2 ⇔ { vacía(f1) =obs vacía(f2)                              ∧ 
+                                 (∀ p : persona) esperando(p, f1) =obs esperando(p,f2) ∧
+                                 posicion(p, f1) =obs posicion(p, f2)                  ∧
+                                 longitud(f1) =obs longitud(f2)
+                               }
+
+observadores
+
+esperando : persona × fila → bool
+posicion  : persona p × fila f → nat              { esperando(p, f)}
+seColó?    : persona p × fila f → bool             { esperando(p, f)}
+
+generadores
+
+abrirVentanilla : → fila
+llegar          : persona p × fila f → fila       {¬ esperando(p, f) }
+atender         : fila f → fila                   { ¬ vacía(f) }
+retirarse          : persona p × fila f → fila              {esperando(p, f)}
+colarseAdelanteDe  : persona p × persona q × fila f → fila  {¬ esperando(p, f) ∧ esperando(q, f)}
+
+otras operaciones
+
+longitud  : fila f → nat
+vacía     : fila → bool
+
+axiomas
+
+esperando(p, abrirVentanilla())           ≡ false
+esperando(p, llegar(p', f))               ≡ p =obs p' ∨ esperando(p, f)
+esperando(p, atender(f))                  ≡ esperando(p, f) ∧L posicion(p, f) ≠ 1
+esperando(p,retirarse(p', f))             ≡ p ≠ p' ∧ esperando(p, f)
+esperando(p, colarseAdelanteDe(p', q, f)) ≡ p = p' ∨ esperando(p, f)
+
+
+posicion(p, llegar(p', f)) ≡ 
+  if p =obs p'
+    then longitud(f) + 1
+    else posicion(p, f)
+  fi
+posicion(p, atender(f))                  ≡ posicion(p) - 1
+posicion(p, retirarse(p', f))            ≡ posicion(p, f) - β(posicion(p',f) < posicion(p, f))
+posicion(p, colarseAdelanteDe(p', q, f)) ≡
+  if p = p'
+    then posicion(q, f)
+    else posicion(p, f) + β( posicion(q, f) ≤ posicion(p, f) )
+  fi
+      
+
+seColó?(p, llegar(p', f)) ≡ 
+  if p =obs p'
+    then false
+    else seColó?(p, f)
+  fi
+seColó?(p, atender(f))       ≡ seColó?(p, f)
+seColó?(p, retirarse(p', f)) ≡ seColó?(p, f)
+seColó?(p, colarseAdelanteDe(p', q, f)) ≡ if p =obs p' then true else seColó?(p, f) fi
+ 
+
+longitud(abrirVentanilla())          ≡ 0
+longitud(llegar(p, f))               ≡ longitud(f) + 1
+longitud(atender(f))                 ≡ longitud(f) - 1
+longitud(retirarse(p, f))            ≡ longitud(f) - 1
+longitud(colarseAdelanteDe(p, q, f)) ≡ longitud(f) + 1
+
+
+vacía(f) ≡ longitud(f) = 0

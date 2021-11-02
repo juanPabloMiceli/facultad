@@ -1,0 +1,50 @@
+TAD Palindromo(α)
+  géneros palindromo
+
+  observadores basicos 
+    ver : palindromo(α) → secu(α)
+
+  generadores
+    medio      : α                 → palindromo(α)
+    medioDoble : α                 → palindromo(α)
+    agregar    : α × palindromo(α) → palindromo(α)
+
+  axiomas
+    ver(medio(a))      ≡ a • ⟨⟩
+    ver(medioDoble(a)) ≡ a • a • ⟨⟩
+    ver(agregar(a, p)) ≡ a • (ver(p) ◦ a)
+
+Fin TAD
+
+palindromo se representa con estr, donde estr es tupla
+
+⟨ long: nat,
+  palabra: secu(α)⟩
+
+
+invariante de representación
+1) e.long = long(palabra)
+2) primer alpha = al ultimo y segundo igual a anteultimo, etc...
+
+Rep(e): estr → bool
+
+Rep(e) ≡ true ⇔ (e.long = long(e.palabra) ∧ esPalindromo(e.palabra) = true)
+
+esPalindromo : secu(α) → bool
+
+esPalindromo(s) ≡ 
+  if vacía?(s)
+    then true
+    else
+      if long(s) = 1
+        then true
+        else prim(s) = ult(s) ∧ esPalindromo(com(fin(s))) 
+      fi
+   fi
+
+
+función de abstracción 
+
+Abs: estr e → palindromo(α)   {Rep(e)}
+
+Abs(e) =obs p : palindromo(α) | ver(p) = e.palabra

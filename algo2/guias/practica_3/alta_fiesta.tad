@@ -1,0 +1,73 @@
+TAD Persona ES String
+TAD Regalo ES String
+TAD Grupo ES String
+
+alta fiesta se representa con estr, donde estr es tupla
+⟨ invitados        : conj(persona),
+  presentes        : cola(persona),
+  grupoDe          : dicc(grupo, conj(persona)),
+  regaloDeGrupo    : dicc(grupo, regalo),
+  grupoMasNumeroso : grupo ⟩
+
+invariante de representacion
+1) Los presentes no deben tener nombres repetidos
+2) En todo momento los presentes deben estar contenidos en los invitados
+3) Todo grupo tiene al menos una persona
+4) Las personas de los grupos deben ser exactamente las mismas que  las presentes
+5) Ninguna persona está en más de 1 grupo
+6) Los grupos son los mismos en grupoDe y en regaloDeGrupo
+7) grupoMasNumeroso debe ser el grupo cuyo conjunto de personas sea el mayor
+
+Rep: estr → bool
+
+Rep(e) ≡ true ⇔
+                ( esConjuntoValido(e.presentes)                                                                                                         ∧L
+                  colaAConjunto(e.presentes) ⊆ e.invitados                                                                                              ∧
+                  (∀g : grupo)(def?(g, e.grupoDe) ⇒L ¬(vacía?(obtener(g, e.grupoDe))))                                                                  ∧
+                  unionDeConjuntos(e.grupoDe, claves(e.grupoDe)) = e.presentes                                                                          ∧
+                  (∀g₁, g₂ : grupo)((g₁ ≠ g2 ∧ {g₁, g₂} ⊆ claves(e.grupoDe)) ⇒L (obtener(g₁, e.grupoDe) ∩ obtener(g₂, e.grupoDe)) = ∅ )                 ∧
+                  claves(e.grupoDe) = claves(e.regaloDeGrupo)                                                                                           ∧                      
+                  (∀g : grupo)((g ≠ e.grupoMasNumeroso ∧ def?(g, e.grupoDe)) ⇒L #(obtener(g, e.grupoDe) < #(obtener(e.grupoMasNumeroso, e.grupoDe))))
+)
+
+
+
+otras operaciones
+
+esConjuntoValido: cola(persona) → bool
+pertenece: persona × cola(persona) → bool
+
+colaAConjunto: cola(persona) cp → conj(persona)  {esConjuntoValido(cp)}
+
+sinGruposVacios: dicc(grupo, conj(persona)) → bool
+
+unionDeConjuntos: dicc(grupo, conj(persona)) d × conj(grupo) cg → conj(persona)   {cg = claves(d)}
+
+axiomas
+
+esConjuntoValido(cp) ≡ 
+  if vacía?(cp)
+    then true
+    else ¬ pertenece(próximo(cp), desencolar(cp)) ∧ esConjuntoValido(desencolar(cp))  
+  fi
+
+pertenece(p, cp)     ≡
+  if vacía?(cp)
+    then false  
+    else próximo(cp) = p ∨ pertenece(p, desencolar(cp))
+  fi
+
+
+colaAConjunto(cp)    ≡
+  if vacía?(cp)
+    then ∅    
+    else Ag(próximo(cp), colaAConjunto(desencolar(cp)))
+  fi
+
+
+unionDeConjuntos(d, cg) ≡
+  if vacía?(cg)
+    then ⟨⟩
+    else obtener(dameUno(cg), d) ∪ unionDeConjuntos(d, sinUno(cg))
+  fi
+

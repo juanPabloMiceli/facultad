@@ -1,0 +1,63 @@
+TAD Dir ES Bool
+
+TAD ArbolBinario
+géneros ab
+
+otras operaciones
+
+#hojas : ab(α) → nat
+degeneradoAIzquierda : ab(α) → bool
+zigzag: ab(α) → bool
+zigzagDireccionado : ab(α) × dir → bool
+ultimoNivelCompleto : ab(α) → nat
+ambosHijos : ab(α) → bool
+
+axiomas
+
+#hojas(nil) ≡ 0
+#hojas(bin(i, r, d)) ≡ 
+#hojas(i) + hojas(d) + (if nil?(i) ∧ nil?(d) then 1 else 0 fi) 
+
+degeneradoAIzquierda(r) ≡
+  if nil?(r)
+    then true
+    else if nil?(der(r)) ∧ degeneradoAIzquierda(izq(r))
+  fi
+
+zigzag(r) ≡
+  if nil?(r)
+    then true
+    else if ( nil?(der(r)) ∧ zigzagDireccionado(r, IZQUIERDA) ) ∨
+            ( nil?(izq(r)) ∧ zigzagDireccionado(r, DERECHA) ) 
+            then true
+            else false
+         fi
+  fi
+
+zigzagDireccionado(r, d) ≡
+  if nil?(r)
+    then true
+    else if d = DERECHA
+          then if nil?(izq(r)) ∧ zigzagDireccionado(der(r), IZQUIERDA) then true else false fi 
+          else if nil?(der(r)) ∧ zigzagDireccionado(izq(r), DERECHA) then true else false fi
+         fi
+  fi
+ 
+ultimoNivelCompleto(r) ≡
+  if nil?(r)
+    then 0
+    else if ambosHijos(r)
+           then 1 + min( ultimoNivelCompleto(izq(r)), ultimoNivelCompleto(der(r)) )
+           else 0 
+         fi        
+
+
+  ambosHijos(der(r)) ∧ ambosHijos(izq(r)) then 1 else 0 fi + ultimoNivelCompleto
+    
+  fi
+
+ambosHijos(r) ≡ 
+  if nil?(r)
+    then false
+    else if ¬ nil?(der(r)) ∧ ¬ nil?(izq(r)) then true else false fi
+  fi

@@ -1,0 +1,21 @@
+TAD Pos ES Tupla ⟨nat, nat⟩
+
+TAD MatrizFinita
+géneros matriz
+
+
+generadores
+
+Crear  : nat filas × nat cols             → matriz
+
+Definir: matriz m × nat valor × pos p     → matriz     {π₁(p) < #Filas(m) ∧ π₂(p) < #Columnas(m)}
+
+observadores
+
+#Filas    : matriz           → nat
+#Columnas : matriz           → nat
+Obtener   : matriz m × pos p → nat  {π₁(p) < #Filas(m) ∧ π₂(p) < #Columnas(m)}
+
+otras operaciones
+
+sumarMatrices: matriz m1 × matriz m2 → matriz {#Filas(m1) < #Filas(m2) ∧ #Columnas(m1) < #Columnas(m2)}  

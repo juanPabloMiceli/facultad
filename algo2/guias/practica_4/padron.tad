@@ -1,0 +1,36 @@
+padron se representa con estr, donde
+
+estr es tupla ⟨ porCodigo: diccTrie(string, persona)
+                porDni: diccAVL(nat, itDiccTrie(string, persona))
+                cantPorEdad: arreglo_dimensionable(nat)
+                cumplenEn: arreglo_dimensionable(diccAVL(nat, itDiccTrie(string, persona))
+                edadesImportantes: conjLista(nat)
+                dia: nat
+                año: nat
+                jubilados: nat⟩
+
+
+avanzarDeDia(estr e){ --Necesito que sea O(m), m = personas que cumplen ese dia
+  avanzarDia(e) --Solo actualizo el dia en la estructura, esto es O(1)
+  
+  it1 = itLista()
+
+  for(p en e.cumplenEn[e.dia]){
+    edad = actualizarEdad(e, p);
+    e.cantPorEdad[edad-1]--;
+    e.cantPorEdad[edad]++;
+    
+    if(e.cantPorEdad[edad-1] == 0){
+    }
+
+    if(esJubilado(edad)){
+      jubilados++;
+    }
+
+  }
+
+}
+
+itConj<nat> EdadesImportantes(estr e){ --Necesito que sea O(X), X = #EdadesImportantes
+  return e.EdadesImportantes.obtenerIt();
+}

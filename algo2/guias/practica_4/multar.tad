@@ -1,0 +1,52 @@
+localidad es string
+vehiculo es string (acotado)
+camara es nat
+multa es tupla: ⟨v: vehiculo, c: camara, monto: nat⟩
+
+estr es tupla:
+⟨ 
+localidades: diccTrie(localidad, ⟨vehiculosDe: conjLista(vehiculo), 
+                                  camarasDe: conjLista(camara), 
+                                  multasPorAuto: conjLista(itLista<multa>),
+                                  multasPorCamara: conjLista(itLista<multa>) ⟩ )
+
+camaras: diccAvl(camara, itLocCam: itDiccTrie<localidad>)
+
+vehiculos: diccTrie(vehiculo,⟨itLocAuto: itDiccTrie<localidad>,
+                              infoMultas: conjLista(⟨m: multa,
+                                                     auto: itLista<multa>
+                                                     camara: itLista<multa> ⟩) ⟩ )
+
+⟩
+
+itLista(vehiculo) vehiculosDe(estr e, localidad l){
+  return e.localidades.obtener(localidad).vehiculosDe.obtenerIt(); --O(|l|)
+}
+
+itLista(camara) camarasDe(estr e, localidad l){
+  return e.localidades.obtener(localidad).camarasDe.obtenerIt(); --O(|l|)
+}
+
+itLista(itLista<multa>) multasDe(estr e, localidad l){
+  multasTotales = e.localidades.obtener(localidad).multasPorAuto;
+  multasTotales.agregarAtras(e.localidades.obtener(localidad.multasPorCamara))
+
+  return multasTotales.obtenerIt(); --O(2*|l|)
+}
+
+void multar(estr e, vehiculo v, camara c, nat monto){ --O(lg(#camaras))
+  
+  itLocCamara = e.camaras.obtener(c).actual() --O(lg(#camaras))
+  locCamara = itLocCamara.actual().localidad
+  itLocAuto = e.vehiculos.obtener(v).itLocAuto.actual() --O(1)
+  locAuto = itLocAuto.actual().localidad
+  
+  multa = ⟨v, c, monto⟩  
+  infoMulta = ⟨multa, ?, ?⟩
+
+  itMulta = e.vehiculos.obtener(v).infoMultas.agregar(infoMulta).m
+
+  itL1 = itLocAuto.actual().multasPorAuto.agregar(itMulta)
+  itL2 = itLocCamara.actual().multasPorCamara.agregar(itMulta)
+ 
+}

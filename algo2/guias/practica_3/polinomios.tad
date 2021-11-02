@@ -1,0 +1,48 @@
+TAD Polinomio
+géneros polinomio
+
+  igualdad observacional
+          (∀p₁, p₂ : polinomio)(p₁ =obs p₂ ⇔ ((∀n : nat)(Evaluar(p₁, n) =obs Evaluar(p₂, n))))
+
+  observadores basicos
+    Evaluar : polinomio × nat → nat
+
+  generadores
+    Cte   : nat                   → polinomio
+    X     :                       → polinomio
+    • + • : polinomio × polinomio → polinomio
+    • . • : polinomio × polinomio → polinomio
+
+  axiomas
+    ...
+
+Fin TAD
+
+polinomio se representa con estr, donde estr es tupla
+
+⟨ grado: nat
+  coef: array[0,...,n] de nat⟩ --Ej: 2x^2+3x+1 =  ⟨3 ,[2, 3, 1]⟩
+
+invariante de representación
+Rep: estr → bool
+
+Rep(e) ≡ true ⇔ tam(e.coef) = e.grado ∧ ¬ (e.coef[tam(e.coef)-1] = 0)
+
+función de abstracción
+Abs: estr e → polinomio {Rep(e)}
+
+Abs(e) =obs p:polinomio |
+                          (∀n : nat)(Evaluar(p, n) = EvaluarPolinomio(e.coef, n))
+
+evaluarPolinomio : ad(nat) × nat → nat 
+
+evaluarPolinomio(p, n) ≡ evaluarPolinomioAux(p, n, tam(p)-1)
+
+
+evaluarPolinomioAux : ad(nat) × nat × nat → nat
+
+evaluarPolinomioAux(p, n, k) ≡ 
+  if k = 0
+    then p[0] * (n**(tam(p)-1))
+    else (p[k] * (n**(tam(p)-k-1))) + evaluarPolinomio(p, n, k-1)
+  fi

@@ -1,0 +1,198 @@
+TAD Centro ES String
+TAD Persona ES String
+
+
+
+TAD RedDeCentros
+géneros red
+
+igualdad observacional
+
+(∀ r1, r2 : red) r1 =obs r2 ⇔ ( obtenerRed(r1) =obs obtenerRed(r2) )
+
+observadores
+
+centros : red → conj(centro)
+
+generadores
+
+crearRed : → red
+agregarCentro : red × centro → red
+
+
+axiomas
+
+centros(crearRed()) ≡ ∅
+centros(agregarCentro(r, c)) ≡
+    centros(r) ∪ 
+    if c ∈ r
+        then ∅
+        else {c}
+    fi
+
+
+
+Fin TAD
+
+
+
+
+
+TAD SAR
+géneros sar
+
+igualdad observacional
+
+
+((∀ s1, s2 : sar) s1 =obs s2 ⇔ ( obtenerRed(s1) =obs obtenerRed(s2) ∧ diaActual(s1) =obs diaActual(s2) ∧ altasSar(s1) =obs altasSar(s2) ∧     --Arreglar para que quede parejo
+                                ((∀ c : centro) (∀ p : persona)
+                                personasEnCentro(s1, c) =obs personasEnCentro(s2, c) ∧
+                                diasEnCentro(s1, p, c)  =obs diasEnCentro(s2, p, c)  ∧
+                                visitantesCentro(s1, c) =obs visitantesCentro(s2, c)
+                              )))
+
+
+observadores
+
+obtenerRed          : sar → red
+
+diaActual           : sar → nat --Los días son números naturales en orden ascendente
+
+personasEnCentro    : sar s × centro c → conj(persona) --Personas actuales en el centro
+                        { c ∈ centros(obtenerRed(s)) }
+
+visitantesCentro    : sar s × centro c → nat   --Cantidad visitas historicas en el centro c
+                        { c ∈ centros(obtenerRed(s)) }
+
+altasSar            : sar s → nat
+
+diasEnCuarentena    : sar s × persona p → nat
+                        { p ∈ personasEnSar(s) }
+
+
+
+
+generadores
+
+crearSar        : red → sar
+insertarPersona : sar s × persona p × centro c → sar
+                  { ¬( p ∈ personasEnSar(s) ) ∧ c ∈ centros(obtenerRed(s))}
+
+reubicarPersona : sar s × persona p × centro c → sar
+                    { c ∈ centros(obtenerRed(s))       ∧L 
+                      p ∈ personasEnSar(s) ∧ 
+                    ¬(p ∈ personasEnCentro(s, c))
+                    }
+avanzarDia       : sar → sar
+
+otras operaciones
+
+personasEnSar       : sar → conj(persona)
+unionPersonas       : sar s × conj(centro) cc → conj(persona)
+filtrarAltas        : sar s × conj(persona) cp × centro c → conj(persona) --conj con las personas que estuvieron 14 dias
+                        {c ∈ centros(obtenerRed(s)) ∧L personasEnCentro(s, c) =obs cp}
+altasEnElDia      : sar s → nat
+altasDelCentro    : sar s × centro c → nat                    { c ∈ centros(obtenerRed(s)) }
+centroMasVisitado : sar s  → centro                           { 0 < #(centros(obtenerRed(s))) }
+maximoDeConjunto  : sar s × conj(centro) cc → centro           { cc =obs centros(obtenerRed(s)) ∧ 0 < #(cc)}
+max               : sar s × centro c1 × centro c2 → centro    { {c1, c2} ⊆ centros(obtenerRed(s)) }
+
+
+axiomas
+
+obtenerRed(crearSar(r))              ≡ r
+obtenerRed(insertarPersona(s, p, c)) ≡ obtenerRed(s)
+obtenerRed(reubicarPersona(s, p, c)) ≡ obtenerRed(s)
+obtenerRed(avanzarDia(s))            ≡ obtenerRed(s)
+
+
+diaActual(crearSar(r))              ≡ 0
+diaActual(insertarPersona(s, p, c)) ≡ diaActual(s)
+diaActual(reubicarPersona(s, p, c)) ≡ diaActual(s)
+diaActual(avanzarDia(s))            ≡ diaActual(s) + 1
+
+
+personasEnCentro(crearSar(r), c)               ≡ ∅ 
+personasEnCentro(insertarPersona(s, p, c), c') ≡ 
+  if c =obs c'
+    then Ag(personasEnCentro(s, c'), p)
+    else personasEnCentro(s, c')
+  fi  
+personasEnCentro(reubicarPersona(s, p, c), c') ≡ 
+  if c = c' --Nos traen a "p" 
+    then Ag(personasEnCentro(s, c'), p)
+    else if p ∈ c' --Se están llevando a "p"
+           then personasEnCentro(s, c') - {p}
+           else personasEnCentro(s, c')
+         fi
+personasEnCentro(avanzarDia(s), c) ≡ personasEnCentro(s, c) - filtrarAltas(s, personasEnCentro(c), c) 
+
+
+visitantesCentro(crearSar(r), c)               ≡ 0
+visitantesCentro(insertarPersona(s, p, c'), c) ≡ visitantesCentro(s, c) + β(c =obs c')
+visitantesCentro(reubicarPersona(s, p, c'), c) ≡ visitantesCentro(s, c) + β(c =obs c')
+visitantesCentro(avanzarDia(s), c)             ≡ visitantesCentro(s)
+
+
+altasSar(crearSar(r))              ≡ 0
+altasSar(insertarPersona(s, p, c)) ≡ altasSar(s)
+altasSar(reubicarPersona(s, p, c)) ≡ altasSar(s)
+altasSar(avanzarDia(s))            ≡ altasSar(s) + altasEnElDia(s, centros(obtenerRed(s)))
+
+
+diasEnCuarentena(insertarPersona(s, p', c'), p) ≡ 
+  if p' =obs p
+    then 0
+    else diasEnCuarentena(s, p)
+  fi
+diasEnCuarentena(reubicarPersona(s, p', c'), p) ≡ diasEnCuarentena(s, p)
+diasEnCuarentena(avanzarDia(s), p) ≡ diasEnCuarentena(s, p) + 1
+
+
+personasEnSar(crearSar(r)) ≡ 0
+personasEnSar(insertarPersona(s, p, c)) ≡ personasEnSar(s) + 1
+personasEnSar(reubicarPersona(s, p, c)) ≡ personasEnSar(s)
+personasEnSar(avanzarDia(s)) ≡ personasEnSar(s)
+
+
+
+personasEnSar(s) ≡ unionPersonas(s, centros(obtenerRed(s)))
+
+unionPersonas(s, cc) ≡ --Devuelve conj(personas)
+  if vacía?(cc)
+    then ∅
+    else personasEnCentro(s, dameUno(cc)) ∪ unionPersonas(s, sinUno(cc))
+  fi
+
+
+filtrarAltas(s, cp, c) ≡ 
+  if vacía?(cp)
+    then ∅
+    else if diasEnCentro(s, dameUno(cp), c) =obs 14
+           then Ag(dameUno(cp), filtrarAltas(s, sinUno(cp), c) )
+           else filtrarAltas(s, sinUno(cp), c)
+         fi
+  fi 
+
+
+altasEnElDia(s, cc) ≡
+  if vacía?(cc)
+    then 0
+    else altasDelCentro(s, dameUno(cc)) + altasEnElDia(s, sinUno(cc))
+  fi 
+
+
+altasDelCentro(s, c) ≡ #(filtrarAltas(s, personasEnCentro(c), c))
+
+
+centroMasVisitado(s) ≡ maximoDeConjunto(s, centros(obtenerRed(s)))
+
+
+maximoDeConjunto(s, cc) ≡
+  if #(cc) = 1
+    then dameUno(cc)
+    else max(s, dameUno(cc), maximoDeConjunto(s, sinUno(cc)))
+  fi
+
+
+max(s, c, c') ≡ if visitantesCentro(s, c) < visitantesCentro(s, c') then c' else c fi
