@@ -1,0 +1,73 @@
+//El lock es usado para asegurarme que nadie ocupe mi puesto a la hora de leer/escribir en el controlador.
+//Si entré al lock entonces en algún momento el STATUS estará READY ya que soy el único proceso intentado leer/escribir.
+static spinlock_t lock;
+
+//Debemos asociar la interrupción de la alarma con su procedimiento
+static ssize_t temp_open(struct inode *inod, struct file *filp){
+
+    IRQ_REQUEST(ON_OFF, handlerOnOff, 1); //Se activa cuando el registro ON_OFF cambia de estado hacia el valor 1
+    return 0;
+}
+
+//Leemos la temperatura del controlador y lo retornamos
+static ssize_t temp_read(struct file *filp, char __user *data, size_t size, loff_t *offset){
+    
+    //Leemos
+    spin_lock(&lock);
+    while(IN(STATUS) != READY) {} //No puedo leer hasta que el dispositivo esté listo
+    int nivelActual = IN(NIVEL) //Leo el registro que me indica la temperatura actual
+    spin_unlock(&lock);
+
+    //Retornamos
+    return nivelActual; 
+}
+
+//Escribe temperatura maxima en el controlador
+static ssize_t max_write(struct file *filp, char __user *data, size_t size, loff_t *offset){
+    //Transformamos data de entrada
+    char *maxTempBuffer;
+    copy_from_user(maxTempBuffer, data, size); //Guardamos el buffer recibido a memoria segura
+    
+    //Escribimos la data
+    spin_unlock(&lock); 
+    while(IN(STATUS) != READY) {} //No puedo escribir hasta que el dispositivo esté listo
+    OUT(MAX, bufferToInt(maxTempBuffer)); //El valor recibido en el buffer es guardado como un entero en el registro MAX
+    spin_unlock(&lock);
+    
+    //Retornamos
+    return 0;
+}
+
+//Debemos liberar el IRQ del procedimiento
+static ssize_t temp_close(struct inode *inod, struct file *filp){
+    IRQ_RELEASE(handlerOnOff); //Desasocia todas las interrupciones que usaran la funcion handlerOnOff
+    return 0;
+}
+
+
+//Se encargara de apagar la alarma luego de 10 minutos en caso que no se haya apagado
+static void handlerOnOff(){
+    
+    int startTime = t_time(); //Tiempo de encendido de la alarma
+    bool alarmOff = false;
+
+    while(t_time() - startTime < 10){//Loopea mientras no hayan pasado 10 minutos
+
+        //Voy a leer si la alarma ya se apago
+        spin_unlock(&lock); 
+        while(IN(STATUS) != READY) {}
+        if(IN(ON_OFF) == 0){
+            alarmOff = true; //Si entro aca es porque se apago antes de los 10 minutos
+        } 
+        spin_unlock(&lock);
+
+        if(alarmOff) return; //Retorno como si nada hubiera pasado
+
+    }
+
+    //Si pasaron mas de 10 minutos tengo que apagar la alarma manualmente
+    spin_unlock(&lock); 
+    while(IN(STATUS) != READY) {}
+    OUT(ON_OFF, 0);
+    spin_unlock(&lock);
+}

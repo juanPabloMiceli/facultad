@@ -1,0 +1,113 @@
+n = #procesos
+count = 0
+mutex = Sem(1)
+barrera = Sem(0)
+
+Proceso(k){
+    seccionConcurrente()
+
+    mutex.wait()
+    count++
+    mutex.signal()
+
+    if(count < n){
+        barrera.wait()
+    }
+    barrera.signal()
+
+    seccionCritica()    //Se ejecuta sii todos los procesos terminaron la seccion concurrente
+}
+
+
+While{
+    seccionConcurrente()//Se ejecuta sii todos los procesos terminaron la seccion critica
+    
+    mutex.wait()
+    count++
+    mutex.signal()
+
+    if(count < n) barrera.wait()
+
+    mutex.wait()
+    count--
+    if(count > 0) barrera.signal()
+    mutex.signal()
+
+
+    seccionCritica()    //Se ejecuta sii todos los procesos terminaron la seccion concurrente
+
+    mutex.wait()
+    count++
+    mutex.signal()
+
+    if(count < n) barrera.wait()
+
+    mutex.wait()
+    count--
+    if(count > 0) barrera.signal()
+    mutex.signal()
+    
+}
+
+
+
+
+cola = colaVacia()
+mutex = Sem(1)
+
+esperando = Sem(0)
+----------------------
+
+
+
+
+
+Proceso A{
+
+    puedoEntrar = Sem(0)
+
+    seccionConcurrente()
+
+    mutex.wait()
+        cola.agregar(puedoEntrar)
+    mutex.signal()
+
+    esperando.signal()
+    puedoEntrar.wait()
+
+    seccionCritica()
+
+
+}
+
+Semaphore s = Sem(0)
+
+Proceso B{
+
+    seccionConcurrente()
+
+    mutex.wait()
+    while(cola.vacia()){
+
+    }
+    aEsperando = cola.desencolar()
+    mutex.signal()
+
+    aEsperando.signal()
+    esperando.wait()
+
+    seccionCritica()
+
+
+}
+
+
+
+
+
+
+
+
+
+
+

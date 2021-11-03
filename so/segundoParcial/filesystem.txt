@@ -1,0 +1,64 @@
+//Tenemos que comparar la igualadad de 2 archivos.
+//Para eso primero veremos que tengan el mismo tamaño.
+//Si ese es el caso compararemos byte a byte todos los bytes de los archivos. 
+//Para eso tenemos que levantar bloque a bloque todos los bloques y compararlos.
+int Ext2FS::compararArchivos(string name1, string name2, string Path){
+    unsigned int blockSize = 1024 << _superblock->log_block_size;
+    
+    //Inodo del directorio path
+    Ext2FSInode *dirInode = inode_for_path(path); 
+
+    //Inodos de los 2 archivos respectivamente
+    Ext2FSInode *file1Inode = get_file_inode_from_dir_inode(dirInode, name1);
+    Ext2FSInode *file2Inode = get_file_inode_from_dir_inode(dirInode, name2);
+    
+    //Si los archivos son de distinto tamaño son distintos y retorno 0.
+    if(file1Inode.size != file1Inode.size) return 0;
+
+    size_t size = file1Inode.size;
+    int contador = 0;
+
+    //Reservamos memoria para levantar los 2 bloques de datos que vamos a comparar
+    unsigned char * block1 = (unsigned char *) malloc(block_size);
+    unsigned char * block2 = (unsigned char *) malloc(block_size);
+    
+    while(size > 0){//Se ejecuta mientras no se hayan comparado todos los bytes
+        
+        
+	    //Conseguimos la direccion de los 2 bloques de datos
+        unsigned int block_address1 = get_block_address(file1Inode, i);
+	    unsigned int block_address2 = get_block_address(file2Inode, i);
+
+        //Levantamos los bloques
+        read_block(block_address1, block1);
+	    read_block(block_address2, block2);
+
+
+        //Si quedan mas de 1 bloque de datos para leer tengo que comparar todo el bloque.
+        //Caso contrario solo comparo size bloques
+        if(!blockEquals(block1, block2, min(blockSize, size))){
+            //Si los bloques no son iguales libero la memoria y devuelvo 0
+            free(block1);
+            free(block2);
+            return 0;
+        }
+        i++;
+        size -= blockSize;
+    }
+
+    //Si sali del while entonces los bloques son iguales.
+    //Entonces libero la memoria y devuelvo uno.
+    free(block1);
+    free(block2);
+    return 1;
+
+}
+
+//Comparo byte a byte, size bytes.
+bool blockEquals(unsigned char *block1, unsigned char *block2, size_t size){
+    unsigned int blockSize = 1024 << _superblock->log_block_size;
+    if(size > blockSize){
+        panic("Quisiste comparar mas bytes de los que tiene el bloque.");
+    } 
+    return memcmp(block1, block2, size) == 0;
+}

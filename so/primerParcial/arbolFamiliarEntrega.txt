@@ -1,0 +1,110 @@
+//Dado un numero de hijo, la funcion devuelve el texto a escribir.
+string getSendingText(int i){
+
+    if(i == 0){
+	    exit_fail("El maestro quiso escribir");
+    }
+
+    //Formamos la frase
+    string res = "Soy tu ";
+    switch (i){
+        case 1:
+            res += "hijo\n";
+            break;
+        case 2:
+            res += "nieto\n";
+            break;
+        case 3:
+            res += "bisnieto\n";
+            break;
+        default:
+            //Soy algun tatara, escribo los tatara necesarios
+            while(i > 3){
+                res += "tatara";
+                i--;
+            }
+            res += "nieto\n";
+            break;
+    }
+
+    return res;
+}
+
+//Funcion principal generadora del arbolFamiliar
+void crearArbolDeProcesos(int N){
+
+    //Inicio N-1 pipes, uno para que cada descendiente se comunique con el proceso maestro.
+    //pipes[i-1][0] es donde lee el maestro la salida de su i-esimo hijo
+    //pipes[i-1][1] es donde escribe el i-esimo hijo
+    int pipes[N-1][2];
+
+    //Inicio los pipes mencionados anteriormente
+    for(_pipe in pipes){
+        if(pipe(&_pipe)){
+			exit_fail("Error creando algun pipe");
+        }
+    }
+
+    //Cuantas personas hay entre el proceso actual y el maestro
+    int numeroHijo = 0;
+
+    for(int i = 0; i < N-1; i++){
+        pid_t hijo = fork();
+
+        if(hijo == 0){
+            //Soy el padre, mi trabajo aqui ha terminado
+            break;
+        }
+        //Si soy el hijo incremento en 1 mi numero y vuelvo para tener un hijo
+        numeroHijo++;
+    }
+
+    //Inicio  el buffer con un tamanio tal que no haya overflow.
+    string textoBase = "Soy tu nieto\n";
+    int maxSize = textoBase.length() + (N-3)*6;
+    int8_t buffer[maxSize];
+
+    if(numeroHijo == 0){
+        //Soy el maestro
+        //No tengo que escribir, asi que cierro el pipe de escritura.
+        for(_pipe in pipes){
+            close(_pipe[1]);
+        }
+
+        for(_pipe in pipes){
+            int bufferSize = maxSize;
+            int readBytes = read(_pipe[0], buffer, bufferSize);
+            if(readBytes < 0){
+			    exit_fail("Error leyendo algun pipe");
+            }
+            printf("%s", buffer);
+
+            //Como ya me mando el mensaje puedo cerrar el pipe de lectura de ese hijo.
+            close(_pipe[0]);
+        }
+        exit(EXIT_SUCCESS);
+    }
+
+    //Soy un descendiente
+
+    //No tengo que leer, asi que cierro mi pipe de lectura.
+    close(pipes[numeroHijo-1][0]);
+    
+
+    //Consigo el texto a mandar
+    string writeText = getSendingText(numeroHijo);
+
+    //Copio el contenido del string al buffer para hacer el write.
+    buffer = writeText.toArray();
+
+    //Escribo el texto en el pipe
+    if(write(pipes[numeroHijo-1][1], buffer, writeText.size()) < 0){
+        exit_fail("Problemas escribiendo al maestro");
+    }
+
+    //Ya escribi, asi que cierro el pipe de escritura.
+    close(pipes[numeroHijo-1][1]);
+
+    exit(EXIT_SUCCESS);
+
+}

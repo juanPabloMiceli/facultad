@@ -1,0 +1,14 @@
+Semaphore puedoAvanzar[N];                  //Inicio un array de N semaforos
+setearSemaforos(&puedoAvanzar, first);      //Inicia todos los semaforos en cero menos first que empieza en 1
+
+void Proceso(int N, int i){                 //Tenemos N procesos, cada proceso sabe su ID por el parametro i
+    while(true){
+        sem_wait(puedoAvanzar[i]);          //Me fijo si tengo permitido ejecutar, de no ser asi, tengo que esperar
+        printf("Proceso %d\n", i);          //Ejecuto todo el codigo que quiero
+        if(i == N-1){                       //Si soy el proceso numero N, tengo que avisarle al primer proceso que puede ejecutar
+            sem_post(puedoAvanzar[0]);      //Aviso y salto a la guarda del while con el continue
+            continue;
+        }
+        sem_post(puedoAvanzar[i+1]);        //Caso contrario, tengo que avisarle al proximo proceso que puede ejecutar
+    }
+}
