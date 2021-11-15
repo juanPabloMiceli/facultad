@@ -4,3 +4,12 @@
 [submodule "inge1/inge1"]
 	path = inge1/inge1
 	url = https://gitlab.com/gianluca_capelo/inge1
+[submodule "redes/tdc-t1"]
+	path = redes/tdc-t1
+	url = git@github.com:arehor-ignacio/tdc-t1.git
+[submodule "redes/tdc-tp2"]
+	path = redes/tdc-tp2
+	url = git@github.com:kugelblitz1235/tdc-tp2.git
+[submodule "redes/tdc-t3"]
+	path = redes/tdc-t3
+	url = git@github.com:arehor-ignacio/tdc-t3.git
