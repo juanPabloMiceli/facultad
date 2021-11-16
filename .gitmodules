@@ -10,3 +10,6 @@
 [submodule "redes/tdc-t3"]
 	path = redes/tdc-t3
 	url = git@github.com:arehor-ignacio/tdc-t3.git
+[submodule "inge1/inge1"]
+	path = inge1/inge1
+	url = git@gitlab.com:gianluca_capelo/inge1.git
