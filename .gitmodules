@@ -1,9 +1,6 @@
 [submodule "inge1/2021-2c"]
 	path = inge1/2021-2c
 	url = https://github.com/UBA-FCEN-IngSoft1/2021-2c
-[submodule "inge1/inge1"]
-	path = inge1/inge1
-	url = git@gitlab.com:gianluca_capelo/inge1.git
 [submodule "redes/tdc-t1"]
 	path = redes/tdc-t1
 	url = git@github.com:arehor-ignacio/tdc-t1.git
