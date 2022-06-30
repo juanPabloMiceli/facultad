@@ -230,3 +230,37 @@ mejorSegunABAux best = recAB
 
 esABB :: Ord a => AB a -> Bool
 esABB = recAB True (\recI r recD i d -> recI && recD && (esNil i || (r > (mejorSegunAB (>) i))) && (esNil d || (r < (mejorSegunAB (<) d))))
+
+data Prop = Var String | Not Prop | And Prop Prop | Or Prop Prop
+
+recProp :: (String -> b) -> (Prop -> b -> b) -> (Prop -> Prop -> b -> b -> b) -> (Prop -> Prop -> b -> b -> b) -> Prop -> b
+recProp casoVar casoNot casoAnd casoOr prop = case prop of
+                                                Var x -> casoVar x
+                                                Not p -> casoNot p (recc p)
+                                                And p q -> casoAnd p q (recc p) (recc q)
+                                                Or p q -> casoOr p q (recc p) (recc q)
+                                                where recc = recProp casoVar casoNot casoAnd casoOr
+
+foldProp :: (String -> b) -> (b -> b) -> (b -> b -> b) -> (b -> b -> b) -> Prop -> b
+foldProp casoVar casoNot casoAnd casoOr = recProp casoVar (\p -> casoNot) (\p q -> casoAnd) (\p q -> casoOr)
+
+valuacion :: (String -> Bool)
+valuacion "x" = True
+valuacion "y" = False
+
+evaluarProp :: (String -> Bool) -> Prop -> Bool
+evaluarProp v = foldProp v not (&&) (||)
+
+printProp :: Prop -> String
+printProp = foldProp id (\p -> " not " ++ p) (\p q -> p ++ " and " ++ q) (\p q -> p ++ " or " ++ q)
+
+
+negProp :: Prop -> Prop
+negProp = recProp 
+                    (\x -> Not (Var x)) 
+                    (\pOrig pRec -> case pOrig of 
+                        Var x -> Not (Var x)
+                        otherwise -> pRec)
+                    (\pOrig qOrig pRec qRec -> Or pRec qRec)
+                    (\pOrig qOrig pRec qRec -> And pRec qRec)
+
