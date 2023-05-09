@@ -1,0 +1,2 @@
+* En el ejercicio 1.6: Hay diferencia entre poner "lenguaje" en RINDIO o directamente en EXAMEN? Me pasa lo mismo con "nota". Termine poniendo "lenguaje" en la relacion por la restriccion que tiene con PROGRAMADOR y dejando "nota" en EXAMEN porque no tiene restricciones.
+* EN el ejericio 1.7: GERENTE es FK de EMPLEADO?

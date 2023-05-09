@@ -1,0 +1,8 @@
+Vivienda(nro_partida(PK), metros_cuadrados, descripcion, numero, tipo_vivienda, id_persona(FK), id_zona(FK), id_calle(FK))
+Casa(nro_partida(PK,FK), tiene_jardin)
+Bloque(nro_partida(PK,FK), metros_cuadrados_garage)
+Depto(nro_partida(PK,FK), nro_depto(PK))
+Persona(id_persona(PK), dni, nombre, apellido, telefono, id_vivienda(FK))
+Zona(id_zona(PK), nombre, ubicacion)
+Calle(id_calle(PK), nombre)
+CalleEstaEnZona(id_calle(PK,FK), id_zona(PK,FK))
