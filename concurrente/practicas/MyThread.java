@@ -319,3 +319,88 @@ class Figura{
         assert actualizandoTamano.compareandset(true, false);
     }
 }
+
+Class ABAStack {
+
+    private AtomicReference top = new AtomicReference(null);
+
+    boolean tryPush(Node node) {
+        Node oldTop = top.get();
+        node.next = oldTop;
+        return top.compareAndSet(oldTop, node);
+    }
+
+    void push(Object o){
+        Node node = Memory.new(o);
+        while(true) {
+            if(tryPush(node)) {
+                return;
+            } else {
+                continue;
+            }
+        }
+    }
+
+    Node tryPop() {
+        Node oldTop = top.get();
+        Node newTop = oldTop.next;
+        if(top.compareAndSet(oldTop, newTop)){
+            return oldTop;
+        }
+        return null;
+    }
+
+    Object pop() {
+        while(true){
+            Node result = tryPop();
+            if(result != null){
+                return result.item;
+            }
+        }
+    }
+
+}
+
+Class ABAFreeStack {
+
+    private AtomicStampedReference head = new AtomicStampedReference(null, 0);
+    int[] stamp = new int[0];
+
+    boolean tryPush(Node node) {
+        Node oldHead = head.get(stamp);
+        node.next = oldHead;
+        return head.compareAndSet(oldHead, node, stamp[0], stamp[0] + 1);
+    }
+
+    void push(Object o){
+        Node node = Memory.new(o);
+        while(true) {
+            if(tryPush(node)) {
+                return;
+            } else {
+                continue;
+            }
+        }
+    }
+
+    Node tryPop() {
+        Node oldHead = head.get(stamp);
+        Node newHead = oldHead.next;
+        if(head.compareAndSet(oldHead, newHead, stamp[0], stamp[0]+1)){
+            return oldHead;
+        }
+        return null;
+    }
+
+    Object pop() {
+        while(true){
+            Node result = tryPop();
+            if(result != null){
+                Object res = result.item;
+                Memory.free(result);
+                return res;
+            }
+        }
+    }
+
+}
